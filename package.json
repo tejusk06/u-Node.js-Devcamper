@@ -1,0 +1,27 @@
+{
+  "name": "devcamper_api",
+  "version": "1.0.0",
+  "description": "Devcamper backend API",
+  "main": "server.js",
+  "scripts": {
+    "start": "NODE_ENV=production node server",
+    "dev": "nodemon server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tejusk06/u-Node.js-Devcamper.git"
+  },
+  "author": "Tejus Kabadi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tejusk06/u-Node.js-Devcamper/issues"
+  },
+  "homepage": "https://github.com/tejusk06/u-Node.js-Devcamper#readme",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.3"
+  }
+}
