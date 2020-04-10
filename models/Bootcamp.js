@@ -46,7 +46,6 @@ const BootcampSchema = new mongoose.Schema({
     },
     coordinates: {
       type: [Number], //? coordinates will be an array of numbers
-      required: true,
       index: '2dsphere'
     },
     formattedAddress: String,
