@@ -39,7 +39,7 @@ exports.getBootcamp = asyncHandler(async (req, res, next) => {
 // @access    Private
 exports.createBootcamp = asyncHandler(async (req, res, next) => {
   const bootcamp = await Bootcamp.create(req.body)
-  //? If there is a field in req.body that is not defined in 'Bootcamp' model then it will not be added to the database 
+  //? If there is a field in req.body that is not defined in 'Bootcamp' model then it will NOT be added to the database 
 
   res.status(201).json({
     success: true,

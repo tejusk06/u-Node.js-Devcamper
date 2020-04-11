@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const slugify = require('slugify');
+
 
 const BootcampSchema = new mongoose.Schema({
   name: {
@@ -8,7 +10,7 @@ const BootcampSchema = new mongoose.Schema({
     trim: true,
     maxlength: [50, 'Name can not be more than 50 characters']
   },
-  //? if name is "DevCamper Bootcamp", slug will be "devcamper-bootcamp". It's a URL friendly version of name, use slugify package to create slugs of names.
+  //? if name is "DevCamper Bootcamp", slug will be "devcamper-bootcamp". It's a URL friendly version of name, slugify package at the end of this file to create slugs of names.
   slug: String,
   description: {
     type: String,
@@ -99,5 +101,12 @@ const BootcampSchema = new mongoose.Schema({
     default: Date.now
   }
 });
+
+// Create bootcamp slug from the name
+BootcampSchema.pre('save', function (next) {
+  this.slug = slugify(this.name, { lower: true });
+  next();
+})
+//? Above middleware will run before the saving. Use 'funtion' and not arrow function due to scope related problems
 
 module.exports = mongoose.model('Bootcamp', BootcampSchema);
