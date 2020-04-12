@@ -101,6 +101,10 @@ const BootcampSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   }
+}, {
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true }
+  //? Need this to populate bootcamps with their courses
 });
 
 // Create bootcamp slug from the name
@@ -108,7 +112,7 @@ BootcampSchema.pre('save', function (next) {
   this.slug = slugify(this.name, { lower: true });
   next();
 })
-//? Above middleware will run before the saving. Use 'funtion' and not arrow function due to scope related problems
+//? Above middleware will run before the saving i.e 'pre'. Use 'funtion' and not arrow function due to scope related problems
 
 // Geocode and create location field
 BootcampSchema.pre('save', async function (next) {
@@ -129,5 +133,20 @@ BootcampSchema.pre('save', async function (next) {
   this.address = undefined;
   next();
 })
+
+// Cascade delete courses when a bootcamp is deleted. i.e delete all courses that belong to a bootcamp when the bootcamp is deleted.
+BootcampSchema.pre('remove', async function (next) {
+  console.log(`Courses being removed from bootcamp ${this._id}`);
+  await this.model('Course').deleteMany({ bootcamp: this._id });
+  next();
+})
+
+// Reverse populate with virtuals
+BootcampSchema.virtual('courses', {
+  ref: 'Course',
+  localField: '_id',
+  foreignField: 'bootcamp',
+  justOne: false //? We want an array of courses that belong to this bootcamp, not just one course
+});
 
 module.exports = mongoose.model('Bootcamp', BootcampSchema);
