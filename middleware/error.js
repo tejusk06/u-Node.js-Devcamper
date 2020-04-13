@@ -4,7 +4,7 @@ const errorHandler = (err, req, res, next) => {
 
   let error = { ...err };
 
-  error.message = err.message; //? Not sure why this is being done since the spread operator above is supposed to add this, which it isn't.
+  error.message = err.message; //? Not sure why this is being done since the spread operator above is supposed to add this, which it isn't doing.
 
 
   // Log to console for dev

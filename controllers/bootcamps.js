@@ -26,7 +26,7 @@ exports.getBootcamps = asyncHandler(async (req, res, next) => {
   queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`); //?Adding a dollar sign to the specific characters in query to match the query style for mongoDB (gt - greater than)
 
   // Finding resource
-  query = Bootcamp.find(JSON.parse(queryStr)).populate('courses');
+  query = Bootcamp.find(JSON.parse(queryStr)).populate('courses'); //?'.populate' - populates the Bootcamp with courses 
 
   // Select fields
   if (req.query.select) {
@@ -43,7 +43,7 @@ exports.getBootcamps = asyncHandler(async (req, res, next) => {
   }
 
   // Pagination
-  const page = parseInt(req.query.page, 10) || 1; //? Default is page 1 unless specified
+  const page = parseInt(req.query.page, 10) || 1; //? Default is page 1 unless specified, page 
   const limit = parseInt(req.query.limit, 10) || 25; //? Limit per page
   const startIndex = (page - 1) * limit;
   const endIndex = page * limit;
@@ -105,7 +105,7 @@ exports.getBootcamp = asyncHandler(async (req, res, next) => {
 // @access    Private
 exports.createBootcamp = asyncHandler(async (req, res, next) => {
   const bootcamp = await Bootcamp.create(req.body)
-  //? If there is a field in req.body that is not defined in 'Bootcamp' model then it will NOT be added to the database 
+  //? If there is a field in req.body that is not defined in 'Bootcamp' model then that specific field will NOT be added to the database
 
   res.status(201).json({
     success: true,

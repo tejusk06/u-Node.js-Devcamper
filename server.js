@@ -29,7 +29,7 @@ if (process.env.NODE_ENV === 'development') {
 app.use('/api/v1/bootcamps', bootcamps);
 app.use('/api/v1/courses', courses);
 
-app.use(errorHandler); //? Has to be after bootcamps is mounted so that it catches the errors from those routes
+app.use(errorHandler); //? Has to be after routes are mounted so that it catches the errors from those routes
 
 const PORT = process.env.PORT || 5000;
 

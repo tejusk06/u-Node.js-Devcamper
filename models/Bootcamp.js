@@ -109,7 +109,7 @@ const BootcampSchema = new mongoose.Schema({
 
 // Create bootcamp slug from the name
 BootcampSchema.pre('save', function (next) {
-  this.slug = slugify(this.name, { lower: true });
+  this.slug = slugify(this.name, { lower: true }); //?'lower' converts to lowercase
   next();
 })
 //? Above middleware will run before the saving i.e 'pre'. Use 'funtion' and not arrow function due to scope related problems
@@ -142,7 +142,7 @@ BootcampSchema.pre('remove', async function (next) {
 })
 
 // Reverse populate with virtuals
-BootcampSchema.virtual('courses', {
+BootcampSchema.virtual('courses', { //? 'courses' will be name of field which will contain the courses
   ref: 'Course',
   localField: '_id',
   foreignField: 'bootcamp',
