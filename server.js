@@ -2,6 +2,8 @@ const express = require('express');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
 const colors = require('colors');
+const path = require('path');
+const fileupload = require('express-fileupload');
 const errorHandler = require('./middleware/error');
 const connectDB = require('./config/db');
 
@@ -24,6 +26,16 @@ app.use(express.json())
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
+
+// File uploading 
+//? Enables express-fileupload
+app.use(fileupload());
+
+// Set static folder
+app.use(express.static(path.join(__dirname, 'public')));
+//? Sets the public folder as static, that means we need to go to 
+//? http://localhost:5000/uploads/photo_5d725a1b7b292f5f8ceff788.jpg instead of 
+//? http://localhost:5000/public/uploads/photo_5d725a1b7b292f5f8ceff788.jpg
 
 // Mount routers
 app.use('/api/v1/bootcamps', bootcamps);
