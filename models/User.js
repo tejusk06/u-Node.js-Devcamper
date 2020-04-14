@@ -52,4 +52,9 @@ UserSchema.methods.getSignedJwtToken = function () {
   //? 'this._id' gives the specific users 'id'. Since this is a method and not a static it will be called on the particular user and not the User model.
 }
 
+// Match user entered password to hashed password in database 
+UserSchema.methods.matchPassword = async function (enteredPassword) {
+  return await bcrypt.compare(enteredPassword, this.password);
+}
+
 module.exports = mongoose.model('User', UserSchema);
