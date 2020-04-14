@@ -18,14 +18,7 @@ exports.register = asyncHandler(async (req, res, next) => {
     role
   });
 
-  // Create token
-  const token = user.getSignedJwtToken();
-  //? call the '.getSignedJwtToken' on 'user' instance not 'User' model
-
-  res.status(200).json({
-    success: true,
-    token
-  })
+  sendTokenResponse(user, 200, res);
 })
 
 
@@ -58,12 +51,33 @@ exports.login = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse('Invalid credentials', 401));
   }
 
+  sendTokenResponse(user, 200, res);
+});
+
+
+//  Get token from model, create cookie and send response 
+const sendTokenResponse = (user, statusCode, res) => {
+
   // Create token
   const token = user.getSignedJwtToken();
   //? call the '.getSignedJwtToken' on 'user' instance not 'User' model
 
-  res.status(200).json({
-    success: true,
-    token
-  })
-})
+  const options = {
+    //? "JWT_COOKIE_EXPIRE" is in milli seconds so need to convert it to days
+    expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000),
+    //? cookie 'expires' field shows 'session' in postman even though set to 30 days here
+    httpOnly: true //? Only client side script can access if true
+  };
+
+  if (process.env.NODE_ENV === 'production') {
+    options.secure = true; //? if true the cookie will be sent with 'https'
+  }
+
+  res
+    .status(statusCode)
+    .cookie('token', token, options)
+    .json({
+      success: true,
+      token
+    });
+}
