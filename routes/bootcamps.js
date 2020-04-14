@@ -10,6 +10,8 @@ const courseRouter = require('./courses');
 
 const router = express.Router();
 
+const { protect } = require('../middleware/auth');
+
 // Re-route into other resource routers
 router.use('/:bootcampId/courses', courseRouter); //? Re-routes to getCourses
 
@@ -19,18 +21,19 @@ router
 
 router
   .route('/:id/photo')
-  .put(bootcampPhotoUpload);
+  .put(protect, bootcampPhotoUpload);
+//? The protect part make the route private so that only authorized users can access
 
 router
   .route('/')
   .get(advancedResults(Bootcamp, 'courses'), getBootcamps)
   //? Need to pass the advancedResults here to make it work for that route
-  .post(createBootcamp);
+  .post(protect, createBootcamp);
 
 router
   .route('/:id')
   .get(getBootcamp)
-  .put(updateBootcamp)
-  .delete(deleteBootcamp);
+  .put(protect, updateBootcamp)
+  .delete(protect, deleteBootcamp);
 
 module.exports = router;
