@@ -39,7 +39,7 @@ const UserSchema = new mongoose.Schema({
 // Encrypt password using bcrypt
 UserSchema.pre('save', async function (next) {
 
-  //? If passwod is not modified it won't be hashed again, will go to next function
+  //? If passwod is not modified it won't be hashed, will go to next function. This will make sure forgotPassword route will work, since no password is passed to be hashed in that route.
   if (!this.isModified('password')) {
     next();
   }
