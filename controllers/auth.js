@@ -1,6 +1,7 @@
 const ErrorResponse = require('../utils/errorResponse');
 const path = require('path');
 const User = require('../models/User');
+const sendEmail = require('../utils/sendEmail');
 const asyncHandler = require('../middleware/async');
 
 // @desc      Register user
@@ -90,12 +91,38 @@ exports.forgotpassword = asyncHandler(async (req, res, next) => {
 
   await user.save({ validateBeforeSave: false })
 
-  res.status(200).json({
-    success: true,
-    data: user
-  })
-})
+  // Create reset url
+  const resetUrl = `${req.protocol}://${req.get('host')}/api/v1/resetpassword/${resetToken}`;
+  //? "req.protocol" returns 'http' or 'https'. "req.get('host')" returns the domain/host name
 
+  const message = `To reset your password, make a PUT request to: \n\n ${resetUrl}`
+  //? If we have a front-end the link would be to another page which would make the api call to the reset Url
+
+  try {
+    await sendEmail({
+      email: user.email,
+      subject: 'Password reset token',
+      message
+    })
+
+    res.status(200).json({ success: true, data: 'Email sent' });
+  } catch (err) {
+    console.log(err);
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+
+    await user.save({ validateBeforeSave: false });
+    //? We are not saving a new user so we dont want to validate
+
+    return next(new ErrorResponse('Email could not be sent', 500));
+
+  }
+
+  // res.status(200).json({
+  //   success: true,
+  //   data: user
+  // })
+})
 
 
 
