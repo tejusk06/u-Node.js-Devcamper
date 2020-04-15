@@ -37,6 +37,19 @@ exports.getBootcamp = asyncHandler(async (req, res, next) => {
 // @route     POST /api/v1/bootcamps/
 // @access    Private
 exports.createBootcamp = asyncHandler(async (req, res, next) => {
+
+  // Add user to req.body
+  req.body.user = req.user.id;
+  //? req.user is available because of auth middleware 'protect'
+
+  // Check for published bootcamps by the user
+  const publishedBootcamp = await Bootcamp.findOne({ user: req.user.id });
+
+  // If the user is not an admin they can only add one bootcamp
+  if (publishedBootcamp && req.user.role !== 'admin') {
+    return next(new ErrorResponse(`The user with ID ${req.user.id} has already published a bootcamp`, 400))
+  }
+
   const bootcamp = await Bootcamp.create(req.body)
   //? If there is a field in req.body that is not defined in 'Bootcamp' model then that specific field will NOT be added to the database
 
@@ -75,7 +88,7 @@ exports.deleteBootcamp = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse(`Bootcamp not found with id of ${req.params.id}`, 404));
   }
 
-  bootcamp.remove(); //? Use remove instead of findByIdAndDelete so that cascade delete works
+  bootcamp.remove(); //? Use remove instead of findByIdAndDelete so that cascade delete(defined in Bootcamp model) works
 
   res.status(200).json({
     success: true,
@@ -168,7 +181,5 @@ exports.bootcampPhotoUpload = asyncHandler(async (req, res, next) => {
       data: file.name
     })
   })
-
-
 
 })

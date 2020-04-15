@@ -37,7 +37,7 @@ exports.login = asyncHandler(async (req, res, next) => {
 
   // Check for user
   const user = await User.findOne({ email }).select('+password');
-  //? '+password' because we want the password included to verify it. In the user model we have set 'select' as 'false'
+  //? '+password' because we want the password included to verify it. In the user model we have set 'select' as 'false' so by default it will not be included
 
 
   if (!user) {
@@ -63,7 +63,7 @@ const sendTokenResponse = (user, statusCode, res) => {
   //? call the '.getSignedJwtToken' on 'user' instance not 'User' model
 
   const options = {
-    //? "JWT_COOKIE_EXPIRE" is in milli seconds so need to convert it to days
+    //? "JWT_COOKIE_EXPIRE" is in milliseconds so need to convert it to days
     expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000),
     //? cookie 'expires' field shows 'session' in postman even though set to 30 days here
     httpOnly: true //? Only client side script can access if true

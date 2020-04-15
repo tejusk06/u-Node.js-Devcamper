@@ -30,6 +30,7 @@ exports.getCourses = asyncHandler(async (req, res, next) => {
 // @access    Public
 exports.getCourse = asyncHandler(async (req, res, next) => {
 
+  //? '.populate' populates the bootcamp field in the course object with the acutal bootcamp object (name and description only)
   const course = await Course.findById(req.params.id).populate({
     path: 'bootcamp',
     select: 'name description'
