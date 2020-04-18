@@ -58,6 +58,31 @@ exports.login = asyncHandler(async (req, res, next) => {
 
 
 
+
+// @desc      Log user out / clear cookie
+// @route     GET /api/v1/auth/logout
+// @access    Private
+exports.logout = asyncHandler(async (req, res, next) => {
+  //? We have access to res.cookie because of cookie parser middleware
+
+  // if (res.cookie) {
+
+  // }
+  res.cookie('token', 'none', {
+    //? Setting cookie to expire in 10 seconds.
+    expires: new Date(Date.now() + 10 * 1000),
+    httpOnly: true
+  })
+
+  res.status(200).json({
+    success: true,
+    data: {}
+  })
+})
+
+
+
+
 // @desc      Get current logged in user
 // @route     POST /api/v1/auth/me
 // @access    Private
