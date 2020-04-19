@@ -5,7 +5,6 @@ const advancedResults = (model, populate) => async (req, res, next) => {
 
   // Copy req.query
   const reqQuery = { ...req.query };
-  console.log("1");
 
   // Fields to exclude
   const removeFields = ['select', 'sort', 'page', 'limit'];
@@ -21,7 +20,6 @@ const advancedResults = (model, populate) => async (req, res, next) => {
 
   // Finding resource
   query = model.find(JSON.parse(queryStr));
-  console.log("2");
 
   if (populate) {
     query = query.populate(populate);
@@ -52,7 +50,6 @@ const advancedResults = (model, populate) => async (req, res, next) => {
 
   // Executing query
   const results = await query;
-  console.log(results);
 
   // Pagination result 
   const pagination = {};
@@ -78,7 +75,6 @@ const advancedResults = (model, populate) => async (req, res, next) => {
     pagination,
     data: results
   }
-  console.log("3");
 
   next(); //? Has to be called since this is a middleware file
 
